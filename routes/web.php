@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\boardsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+    Route::get('/board', function () {
+        return Inertia::render('Board');
+    })->name('board');
+    Route::get('demos/tasks', 'DemoController@showTasks');
+    Route::patch('demos/tasks/{id}', 'DemoController@updateTasksStatus');
+    Route::put('demos/tasks/updateAll', 'DemoController@updateTasksOrder');
+    Route::post('/create-board', [boardsController::class, 'storeBoard']);
 });
