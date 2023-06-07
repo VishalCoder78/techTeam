@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\boardsController;
+use App\Http\Controllers\cardController;
+use App\Http\Controllers\itemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,4 +39,6 @@ Route::middleware([
         return Inertia::render('Board');
     })->name('board');
     Route::post('/create-board', [boardsController::class, 'storeBoard']);
+    Route::post('/add-card', [cardController::class, 'store']);
+    Route::post('/add-list', [itemController::class, 'store']);
 });

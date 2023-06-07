@@ -26,6 +26,46 @@ const closeEditModal = function () {
 
 </script>
 
+<script>
+export default {
+
+    data() {
+        return {
+            form: {
+                board: '',
+            },
+            boards: [],
+        };
+    },
+    mounted() {
+        this.fetchBoards();
+    },
+    methods: {
+        create_board() {
+            axios.post('/create-board', this.form)
+                .then(response => {
+                    console.log(response.data.message);
+                    closeModal()
+                    // Do any other necessary actions after successful submission
+                })
+                .catch(error => {
+                    console.log(error.response.data);
+                    // Handle error cases
+                });
+        },
+        fetchBoards() {
+            axios.get('http://localhost:8000/api/board')
+                .then(response => {
+                    this.boards = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    }
+};
+</script>
+
 <template>
     <AppLayout title="Dashboard">
         <div class="w-80 bg-gray-300 mx-auto mt-24 p-4 rounded-md">
@@ -35,20 +75,8 @@ const closeEditModal = function () {
             </div>
             <div>
                 <ul>
-                    <li class="my-4  rounded-md flex justify-between">
-                        <a href="/board" class="p-2 bg-gray-200 w-full cursor-pointer rounded-l-md">PieCloud</a>
-                        <button class="bg-green-400 px-2 rounded-r-md " @click="openEditModal">Edit</button>
-                    </li>
-                    <li class="my-4  rounded-md flex justify-between">
-                        <a href="/board" class="p-2 bg-gray-200 w-full cursor-pointer rounded-l-md">PieCloud</a>
-                        <button class="bg-green-400 px-2 rounded-r-md " @click="openEditModal">Edit</button>
-                    </li>
-                    <li class="my-4  rounded-md flex justify-between">
-                        <a href="/board" class="p-2 bg-gray-200 w-full cursor-pointer rounded-l-md">PieCloud</a>
-                        <button class="bg-green-400 px-2 rounded-r-md " @click="openEditModal">Edit</button>
-                    </li>
-                    <li class="my-4  rounded-md flex justify-between">
-                        <a href="/board" class="p-2 bg-gray-200 w-full cursor-pointer rounded-l-md">PieCloud</a>
+                    <li class="my-4  rounded-md flex justify-between" v-for="board in boards" :key="board.id">
+                        <a href="/board" class="p-2 bg-gray-200 w-full cursor-pointer rounded-l-md">{{ board.board }}</a>
                         <button class="bg-green-400 px-2 rounded-r-md " @click="openEditModal">Edit</button>
                     </li>
                 </ul>
@@ -70,8 +98,9 @@ const closeEditModal = function () {
                 </div>
                 <div class="my-2">
                     <p class="text-3xl text-center">Create New Board</p>
-                    <form action="/create-board" method="POST">
-                        <input type="text " class="border w-full py-2 rounded-md my-2 px-2" placeholder="Board Name">
+                    <form @submit.prevent="create_board">
+                        <input v-model="form.board" type="text " class="border w-full py-2 rounded-md my-2 px-2"
+                            placeholder="Board Name">
                         <br>
                         <button type="submit" class="w-full bg-gray-800 text-gray-200 py-2 rounded-md my-2 ">Create</button>
                     </form>
@@ -79,7 +108,7 @@ const closeEditModal = function () {
             </div>
         </div>
 
-        <!-- edit Boar name -->
+        <!-- Edit Board name -->
         <div class="block fixed h-[100vh] w-[100vw] bg-gray-200/80 top-0 z-40" v-if="state.isEditModalOpen == true">
             <div class="border bg-white w-[25rem] relative top-[40%] left-[35%] p-4 rounded-lg Z-50">
                 <div class="w-full flex justify-end">
@@ -100,5 +129,6 @@ const closeEditModal = function () {
                 </div>
             </div>
         </div>
+        <h1></h1>
     </AppLayout>
 </template>
